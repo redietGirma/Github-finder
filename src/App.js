@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import Navbar from './component/layout/layout/Navbar';
 import Users from './component/layout/Users/Users';
 import './App.css';
+import Alert from './component/layout/layout/Alert';
 import axios from 'axios';
 import Search  from './component/layout/Users/search';
 
@@ -25,13 +26,26 @@ import Search  from './component/layout/Users/search';
   
       this.setState({ users : res.data.items, loading: false})    }
 
+      //clears users
+    clearUsers = () => this.setState( {users: [], loading: false })
+
+    //sets allert
+    setAlert = (msg, type) => {
+      this.setState({ alert: {msg , type}})
+      setTimeout(() => this.setState({alert: null}), 3000) 
+    }
     render(){
+      const {loading, users, alert} = this.state;
       return (
         <div className="App">
-          <Navbar/>
-          <Search searchUsers={this.searchUsers}/>
+          <Navbar/>         
           <div className='container'>
-          <Users loading={this.state.loading} users={this.state.users}/>
+          <Alert alert={alert}/>
+          <Search searchUsers={this.searchUsers} 
+          clearUsers={this.clearUsers} 
+          showClear={users.length > 0 ? true : false }
+          setAlert={this.setAlert}/>
+          <Users loading={loading} users={users}/>
           </div>         
         </div>
       );
